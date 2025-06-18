@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ showUploadForm: false }" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Log File Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 p-6">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">📜 Log File Dashboard</h1>
+
+    <!-- Upload Form Toggle -->
+    <button @click="showUploadForm = !showUploadForm"
+      class="mb-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+      <template x-if="!showUploadForm">
+        <span>📤 Upload New Log</span>
+      </template>
+      <template x-if="showUploadForm">
+        <span>✖ Close Upload</span>
+      </template>
+    </button>
+
+    <!-- Upload Form -->
+    <form x-show="showUploadForm" x-transition method="post" action="/upload/" enctype="multipart/form-data"
+      class="bg-white p-6 rounded shadow mb-6">
+      <div class="mb-4">
+        <label class="block font-semibold mb-2">User</label>
+        <input type="text" name="user" required class="w-full border rounded px-3 py-2">
+      </div>
+      <div class="mb-4">
+        <label class="block font-semibold mb-2">Log File (.log)</label>
+        <input type="file" name="file" accept=".log" required class="w-full">
+      </div>
+      <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+        Upload
+      </button>
+    </form>
+
+    <!-- Log Table -->
+    <div class="overflow-auto bg-white rounded shadow">
+      <table class="min-w-full text-sm text-left">
+        <thead class="bg-gray-200 text-gray-700">
+          <tr>
+            <th class="py-3 px-4">User</th>
+            <th class="py-3 px-4">Original Filename</th>
+            <th class="py-3 px-4">Uploaded</th>
+            <th class="py-3 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-2 px-4">{{ log.user }}</td>
+            <td class="py-2 px-4">{{ log.original_filename }}</td>
+            <td class="py-2 px-4">{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td class="py-2 px-4 space-x-2">
+              <a href="/view/{{ log.filename }}"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">View</a>
+              <a href="/download/{{ log.filename }}"
+                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Download</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+
+</html>

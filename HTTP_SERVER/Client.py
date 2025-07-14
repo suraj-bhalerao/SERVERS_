@@ -50,8 +50,7 @@ def upload_file(file_path, upload_log):
                 return f"Failed (HTTP {res.status_code})"
         except Exception as e:
             return f"Failed ({e})"
-
-
+        
 def upload_file_chunked(file_path, upload_log):
     if str(file_path) in upload_log:
         return "Already uploaded"
